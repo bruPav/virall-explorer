@@ -73,6 +73,8 @@ npm run deploy
 ```
 
 The `deploy` script builds and publishes `dist/` to the `virall-explorer` Pages project.
+The current project was created with a direct upload; to deploy automatically on push, connect
+this repository to the Pages project in the Cloudflare dashboard (Git integration).
 
 `public/_redirects` provides the SPA fallback; `public/_headers` sets CSP, cache, and security
 headers.
