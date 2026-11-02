@@ -16,6 +16,7 @@ import { Reveal } from '@/components/ui/Reveal';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Stat } from '@/components/ui/Stat';
 import { useTheme } from '@/lib/theme';
+import { useMediaQuery } from '@/lib/hooks';
 import { formatNumber } from '@/lib/format';
 import { SITE, type CompositionEntry, type CoreStats, type Genome, type Sample, type Viability } from '@/lib/types';
 import samplesData from '@/data/samples.json';
@@ -60,10 +61,23 @@ const giants = highlights.topGiants.map((entry) => ({
 
 function HeroBackdrop() {
   const { theme } = useTheme();
+  const wide = useMediaQuery('(min-width: 900px)');
+  const reduce = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const showAurora = wide && !reduce;
   return (
     <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-      <div className="absolute inset-0 opacity-60 dark:opacity-70">
-        <Aurora
+      <div
+        className="absolute inset-0 opacity-80"
+        style={{
+          background:
+            theme === 'dark'
+              ? 'radial-gradient(50rem 24rem at 12% 0%, rgba(53,201,195,0.18), transparent 65%), radial-gradient(40rem 22rem at 90% 8%, rgba(179,157,255,0.16), transparent 62%)'
+              : 'radial-gradient(46rem 24rem at 12% 0%, rgba(14,124,134,0.14), transparent 65%), radial-gradient(38rem 22rem at 90% 8%, rgba(123,94,167,0.12), transparent 62%)',
+        }}
+      />
+      {showAurora && (
+        <div className="absolute inset-0 opacity-60 dark:opacity-70">
+          <Aurora
           colorStops={
             theme === 'dark'
               ? ['#0a2a33', '#0e7c86', '#2e86ab', '#6d4fb0']
@@ -75,12 +89,14 @@ function HeroBackdrop() {
           scale={1.1}
           glow={0.8}
           brightness={theme === 'dark' ? 0.7 : 1}
-          layers={3}
           mouseInteraction={false}
-          intro
-          lightMode={theme === 'light'}
-        />
-      </div>
+            intro
+            lightMode={theme === 'light'}
+            dpr={0.8}
+            layers={2}
+          />
+        </div>
+      )}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-bg/25 to-bg" />
       <div className="absolute inset-0 bg-dots opacity-40 [mask-image:radial-gradient(ellipse_at_center,black,transparent_78%)]" />
     </div>
@@ -89,6 +105,8 @@ function HeroBackdrop() {
 
 export default function Overview() {
   const { theme } = useTheme();
+  const wide = useMediaQuery('(min-width: 900px)');
+  const reduce = useMediaQuery('(prefers-reduced-motion: reduce)');
   const spotlightStyle = {
     '--spotlight-card-surface': 'var(--surface-solid)',
     '--spotlight-card-border': 'var(--border)',
@@ -111,17 +129,21 @@ export default function Overview() {
 
               <h1 className="display mt-5 text-balance text-[2.65rem] leading-[0.98] sm:text-6xl lg:text-[4.15rem]">
                 The ISS surface virome,{' '}
-                <GradientText
-                  colors={
-                    theme === 'dark'
-                      ? ['#35c9c3', '#6aabff', '#b39dff']
-                      : ['#0b6d76', '#266f92', '#6247a6']
-                  }
-                  animationSpeed={7}
-                  className="inline-block"
-                >
-                  made explorable.
-                </GradientText>
+                {wide && !reduce ? (
+                  <GradientText
+                    colors={
+                      theme === 'dark'
+                        ? ['#35c9c3', '#6aabff', '#b39dff']
+                        : ['#0b6d76', '#266f92', '#6247a6']
+                    }
+                    animationSpeed={7}
+                    className="inline-block"
+                  >
+                    made explorable.
+                  </GradientText>
+                ) : (
+                  <span className="text-gradient">made explorable.</span>
+                )}
               </h1>
 
               <div className="mt-5 max-w-xl text-pretty text-[0.95rem] leading-relaxed text-muted sm:text-base">
